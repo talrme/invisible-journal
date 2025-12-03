@@ -1,6 +1,6 @@
 # Invisible Journal ✍️
 
-A therapeutic journaling web app where your words disappear as you write. Nothing is saved, nothing is stored - pure ephemeral expression.
+**[🌐 View Live Website](https://talrme.github.io/invisible-journal/)**
 
 ## Concept
 

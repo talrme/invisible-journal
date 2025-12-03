@@ -30,7 +30,7 @@ class InvisibleJournal {
         // State
         this.layoutMode = 'single'; // 'single' or 'multiline'
         this.visualEffect = 'gravity';
-        this.speed = 0.5; // 0.5 (slowest) to 10 (fastest)
+        this.speed = 1.0; // 0 (slowest) to 5 (fastest) chars/sec
         this.isDark = false;
         this.particles = [];
         this.deletionTimeout = null;
@@ -88,27 +88,6 @@ class InvisibleJournal {
         this.speedSlider.addEventListener('input', (e) => {
             this.speed = parseFloat(e.target.value);
             this.updateSpeedLabel();
-        });
-        
-        // Show label on interaction, hide after delay
-        this.speedSlider.addEventListener('mousedown', () => {
-            this.updateSpeedLabel();
-        });
-        
-        this.speedSlider.addEventListener('touchstart', () => {
-            this.updateSpeedLabel();
-        });
-        
-        this.speedSlider.addEventListener('mouseup', () => {
-            setTimeout(() => {
-                this.speedLabel.textContent = '';
-            }, 2000);
-        });
-        
-        this.speedSlider.addEventListener('touchend', () => {
-            setTimeout(() => {
-                this.speedLabel.textContent = '';
-            }, 2000);
         });
 
         // Theme toggle
@@ -194,6 +173,7 @@ class InvisibleJournal {
     openModal(modalName) {
         if (modalName === 'settings') {
             this.settingsModal.classList.add('active');
+            this.updateSpeedLabel(); // Show speed label when opening settings
         } else if (modalName === 'info') {
             this.infoModal.classList.add('active');
         }
@@ -208,9 +188,15 @@ class InvisibleJournal {
     }
 
     handleTextInput() {
+        const hadText = this.currentText.length > 0;
         this.currentText = this.input.value;
         this.updateDisplay();
         this.lastTypingTime = Date.now();
+        
+        // If this is the first character typed, set lastDeletionTime to give a 0.5 second buffer
+        if (!hadText && this.currentText.length > 0) {
+            this.lastDeletionTime = Date.now() + 500; // Add 0.5 second delay
+        }
     }
 
     // ==================== Layout Mode Switching ====================
@@ -374,24 +360,22 @@ class InvisibleJournal {
 
     // ==================== Speed Calculation ====================
     updateSpeedLabel() {
-        // Calculate chars per second (1 / seconds per char)
-        const secondsPerChar = this.getDeleteSpeed() / 1000;
-        const charsPerSec = 1 / secondsPerChar;
-        
-        this.speedLabel.textContent = `${charsPerSec.toFixed(1)} char/s`;
+        // Speed slider directly represents chars per second (0 to 5)
+        this.speedLabel.textContent = `${this.speed.toFixed(1)} char/s`;
     }
     
     getDeleteSpeed() {
-        // Map speed slider (0.5 to 10) to deletion time in milliseconds
-        // 0.5 = 1000ms (1 second per character = 1 char/sec)
-        // 10 = 200ms (0.2 seconds per character = 5 char/sec)
-        const minSpeed = 200;   // 5 char/sec at speed=10
-        const maxSpeed = 1000;  // 1 char/sec at speed=0.5
+        // Speed slider is 0 to 5 chars/sec
+        // Convert to milliseconds per character
+        // 0 chars/sec = infinity (never delete) -> use very large number
+        // 5 chars/sec = 200ms per character
         
-        // Linear mapping
-        const normalized = (this.speed - 0.5) / 9.5; // 0 to 1
+        if (this.speed === 0) {
+            return 999999; // Effectively never delete
+        }
         
-        return maxSpeed - (normalized * (maxSpeed - minSpeed));
+        // Direct conversion: 1 char/sec = 1000ms, 5 chars/sec = 200ms
+        return 1000 / this.speed;
     }
 
     // ==================== Deletion System ====================
