@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invisible Journal - Write & Let Go</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1>Invisible Journal</h1>
+            <p class="tagline">Write freely. Let it go.</p>
+        </header>
+
+        <!-- Writing Area -->
+        <div class="writing-area" id="writing-area">
+            <canvas id="particle-canvas"></canvas>
+            <div id="text-display"></div>
+            <div id="text-display-cursor"></div>
+            <input 
+                type="text"
+                id="journal-input" 
+                placeholder="Start writing... your words will slowly disappear..."
+                spellcheck="false"
+                autocomplete="off"
+            />
+        </div>
+
+        <!-- Bottom Buttons -->
+        <div class="bottom-buttons">
+            <button id="info-btn" class="bottom-btn" aria-label="Information">ℹ️ Info</button>
+            <button id="settings-btn" class="bottom-btn" aria-label="Settings">⚙️ Settings</button>
+        </div>
+
+        <!-- Settings Modal -->
+        <div id="settings-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Settings</h2>
+                    <button class="close-btn" data-modal="settings">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="setting-item">
+                        <label for="layout-mode">Layout Mode</label>
+                        <select id="layout-mode">
+                            <option value="single">Single Line (Delete & Pull)</option>
+                            <option value="multiline">3 Lines (Fade in Place)</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-item">
+                        <label for="effect-select">Visual Effect</label>
+                        <select id="effect-select">
+                            <option value="gravity">🪐 Gravity Pull</option>
+                            <option value="dissolve">✨ Dissolve</option>
+                            <option value="float">🎈 Float Away</option>
+                            <option value="explode">💥 Explode</option>
+                            <option value="spiral">🌀 Spiral</option>
+                            <option value="wave">🌊 Wave</option>
+                            <option value="vortex">🌪️ Vortex</option>
+                            <option value="firework">🎆 Firework</option>
+                            <option value="scatter">🎲 Scatter</option>
+                            <option value="typewriter">⌨️ Typewriter Erase</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-item">
+                        <label for="speed-slider">
+                            Deletion Speed
+                            <span id="speed-label" class="speed-value"></span>
+                        </label>
+                        <input type="range" id="speed-slider" min="0.5" max="10" value="0.5" step="0.5">
+                    </div>
+
+                    <div class="setting-item">
+                        <label for="theme-toggle">Theme</label>
+                        <button id="theme-toggle" class="toggle-btn" aria-label="Toggle theme">
+                            <span class="toggle-icon">🌙</span> Dark Mode
+                        </button>
+                    </div>
+
+                    <div class="setting-item">
+                        <label for="bg-select">Background</label>
+                        <select id="bg-select">
+                            <option value="default">Calm Blue</option>
+                            <option value="warm">Warm Sunset</option>
+                            <option value="forest">Forest Green</option>
+                            <option value="lavender">Lavender</option>
+                            <option value="minimal">Minimal</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-item">
+                        <label for="font-select">Font</label>
+                        <select id="font-select">
+                            <option value="serif">Serif</option>
+                            <option value="sans">Sans-Serif</option>
+                            <option value="mono">Monospace</option>
+                            <option value="handwriting">Handwriting</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Modal -->
+        <div id="info-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>About Invisible Journal</h2>
+                    <button class="close-btn" data-modal="info">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p class="info-text">
+                        Invisible Journal provides a safe space for stream-of-consciousness writing. 
+                        Your thoughts fade away as you type, encouraging authentic self-expression 
+                        without the pressure of permanence.
+                    </p>
+                    <div class="privacy-note">
+                        <p>🔒 <strong>Note:</strong> Nothing you write is saved, stored, or transmitted. Your words disappear forever.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
+

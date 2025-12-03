@@ -1,0 +1,539 @@
+/* ==================== Variables ==================== */
+:root {
+    --bg-primary: #e3f2fd;
+    --bg-secondary: #bbdefb;
+    --text-primary: #1a1a1a;
+    --text-secondary: #555;
+    --control-bg: rgba(255, 255, 255, 0.9);
+    --control-border: #90caf9;
+    --shadow: rgba(0, 0, 0, 0.1);
+    --accent: #42a5f5;
+    --delete-btn: #ef5350;
+}
+
+[data-theme="dark"] {
+    --bg-primary: #1a1a2e;
+    --bg-secondary: #16213e;
+    --text-primary: #eee;
+    --text-secondary: #aaa;
+    --control-bg: rgba(30, 30, 46, 0.9);
+    --control-border: #42a5f5;
+    --shadow: rgba(0, 0, 0, 0.3);
+    --accent: #64b5f6;
+    --delete-btn: #e57373;
+}
+
+/* ==================== Global Styles ==================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    transition: background 0.3s ease;
+}
+
+/* Background variations */
+body[data-background="warm"] {
+    --bg-primary: #fff3e0;
+    --bg-secondary: #ffccbc;
+}
+
+body[data-background="forest"] {
+    --bg-primary: #e8f5e9;
+    --bg-secondary: #c8e6c9;
+}
+
+body[data-background="lavender"] {
+    --bg-primary: #f3e5f5;
+    --bg-secondary: #e1bee7;
+}
+
+body[data-background="minimal"] {
+    --bg-primary: #fafafa;
+    --bg-secondary: #f5f5f5;
+}
+
+[data-theme="dark"][data-background="warm"] {
+    --bg-primary: #3e2723;
+    --bg-secondary: #4e342e;
+}
+
+[data-theme="dark"][data-background="forest"] {
+    --bg-primary: #1b5e20;
+    --bg-secondary: #2e7d32;
+}
+
+[data-theme="dark"][data-background="lavender"] {
+    --bg-primary: #4a148c;
+    --bg-secondary: #6a1b9a;
+}
+
+[data-theme="dark"][data-background="minimal"] {
+    --bg-primary: #212121;
+    --bg-secondary: #303030;
+}
+
+/* ==================== Container ==================== */
+.container {
+    width: 100%;
+    max-width: 900px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* ==================== Header ==================== */
+header {
+    text-align: center;
+    padding: 20px;
+    background: var(--control-bg);
+    border-radius: 15px;
+    box-shadow: 0 4px 15px var(--shadow);
+    backdrop-filter: blur(10px);
+}
+
+header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 8px;
+    color: var(--accent);
+}
+
+.tagline {
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+/* ==================== Controls (Removed - Now in Modal) ==================== */
+
+/* ==================== Writing Area ==================== */
+.writing-area {
+    position: relative;
+    width: 100%;
+    height: 80px;
+    margin-bottom: 320px;
+    transition: height 0.3s ease, margin-bottom 0.3s ease;
+}
+
+.writing-area.multiline-mode {
+    height: 250px;
+    margin-bottom: 150px;
+}
+
+#journal-input {
+    width: 100%;
+    height: 100%;
+    padding: 20px 30px;
+    border: none;
+    border-radius: 15px;
+    background: var(--control-bg);
+    font-size: 1.3rem;
+    line-height: 1.5;
+    box-shadow: 0 4px 15px var(--shadow);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+    color: transparent;
+    caret-color: var(--text-primary);
+}
+
+/* Multiline mode adjustments */
+.writing-area.multiline-mode #journal-input {
+    padding: 30px;
+    line-height: 2.2;
+    color: transparent;
+    caret-color: transparent; /* Hide caret in multiline mode */
+}
+
+#journal-input:focus {
+    outline: 2px solid var(--accent);
+}
+
+#journal-input::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.6;
+}
+
+/* Font variations */
+#journal-input[data-font="serif"],
+#text-display[data-font="serif"] {
+    font-family: Georgia, 'Times New Roman', serif;
+}
+
+#journal-input[data-font="sans"],
+#text-display[data-font="sans"] {
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+#journal-input[data-font="mono"],
+#text-display[data-font="mono"] {
+    font-family: 'Courier New', monospace;
+    letter-spacing: 0.05em;
+}
+
+#journal-input[data-font="handwriting"],
+#text-display[data-font="handwriting"] {
+    font-family: 'Brush Script MT', cursive;
+}
+
+/* Canvas for particle effects */
+#particle-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 400px;
+    pointer-events: none;
+    border-radius: 15px;
+    z-index: 10;
+}
+
+/* Text overlay for special effects */
+#text-display {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 20px 30px;
+    pointer-events: none;
+    font-size: 1.3rem;
+    line-height: 1.5;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    font-family: Georgia, 'Times New Roman', serif;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+}
+
+/* Multiline mode adjustments */
+.writing-area.multiline-mode #text-display {
+    padding: 30px;
+    line-height: 2.2;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    display: block;
+    align-items: unset;
+}
+
+#text-display .char {
+    display: inline-block;
+}
+
+/* Custom cursor for multiline mode */
+#text-display-cursor {
+    position: absolute;
+    width: 2px;
+    height: 1.3rem;
+    background: var(--text-primary);
+    animation: blink 1s infinite;
+    display: none;
+    z-index: 3;
+}
+
+.writing-area.multiline-mode #text-display-cursor {
+    display: block;
+}
+
+@keyframes blink {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+}
+
+/* ==================== Bottom Buttons ==================== */
+.bottom-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.bottom-btn {
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    background: var(--control-bg);
+    border: 2px solid var(--control-border);
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px var(--shadow);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.bottom-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px var(--shadow);
+    border-color: var(--accent);
+}
+
+/* ==================== Modal Styles ==================== */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    animation: fadeIn 0.3s ease;
+}
+
+.modal.active {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-content {
+    background: var(--control-bg);
+    border-radius: 20px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 80vh;
+    overflow: hidden;
+    box-shadow: 0 10px 40px var(--shadow);
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 25px;
+    border-bottom: 2px solid var(--control-border);
+}
+
+.modal-header h2 {
+    margin: 0;
+    color: var(--accent);
+    font-size: 1.5rem;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    line-height: 1;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+}
+
+.close-btn:hover {
+    color: var(--accent);
+    transform: rotate(90deg);
+}
+
+.modal-body {
+    padding: 25px;
+    max-height: calc(80vh - 80px);
+    overflow-y: auto;
+}
+
+/* Settings Modal */
+.setting-item {
+    margin-bottom: 20px;
+}
+
+.setting-item:last-child {
+    margin-bottom: 0;
+}
+
+.setting-item label {
+    display: block;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+
+.setting-item select,
+.setting-item input[type="range"] {
+    width: 100%;
+    padding: 10px 12px;
+    border: 2px solid var(--control-border);
+    border-radius: 8px;
+    background: var(--control-bg);
+    color: var(--text-primary);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.setting-item select:hover,
+.setting-item select:focus {
+    border-color: var(--accent);
+    outline: none;
+}
+
+.setting-item input[type="range"] {
+    padding: 0;
+    height: 6px;
+}
+
+.speed-value {
+    float: right;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-weight: normal;
+}
+
+.toggle-btn {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid var(--control-border);
+    border-radius: 8px;
+    background: var(--control-bg);
+    color: var(--text-primary);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.toggle-btn:hover {
+    border-color: var(--accent);
+}
+
+.toggle-icon {
+    font-size: 1.2rem;
+}
+
+/* Info Modal */
+.info-text {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: var(--text-primary);
+    margin-bottom: 20px;
+}
+
+.privacy-note {
+    background: rgba(66, 165, 245, 0.1);
+    padding: 15px;
+    border-left: 4px solid var(--accent);
+    border-radius: 4px;
+}
+
+.privacy-note p {
+    margin: 0;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+}
+
+.privacy-note strong {
+    color: var(--accent);
+}
+
+/* ==================== Animations ==================== */
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes blurOut {
+    to {
+        filter: blur(10px);
+        opacity: 0;
+    }
+}
+
+@keyframes popOut {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(0);
+        opacity: 0;
+    }
+}
+
+.fade-out {
+    animation: fadeOut 2s forwards;
+}
+
+.blur-out {
+    animation: blurOut 2s forwards;
+}
+
+.pop-out {
+    animation: popOut 0.5s forwards;
+}
+
+/* Character span for individual character effects */
+.char {
+    display: inline-block;
+    transition: opacity 0.3s ease;
+}
+
+/* ==================== Responsive Design ==================== */
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 2rem;
+    }
+
+    .controls {
+        flex-direction: column;
+    }
+
+    .control-group {
+        width: 100%;
+        min-width: unset;
+    }
+
+    .writing-area {
+        height: 300px;
+    }
+
+    #journal-input {
+        padding: 20px;
+        font-size: 1rem;
+    }
+
+    .delete-btn {
+        width: 100%;
+    }
+}
+
