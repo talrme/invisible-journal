@@ -45,6 +45,24 @@ class InvisibleJournal {
         this.maxLineChars = 80; // Approximate max characters for one line
         this.updateMaxLineChars(); // Set based on screen size
         
+        // Placeholder phrases
+        this.placeholderPhrases = [
+            "What's on your mind right now...",
+            "Watch your worries fade away...",
+            "Write it down, then let it disappear...",
+            "Free your mind, no trace left behind...",
+            "Express, release, move forward...",
+            "Start typing, watch it disappear...",
+            "Just you and this moment...",
+            "Type and let go...",
+            "Speak freely into the void...",
+            "Let your mind empty here...",
+            "Lighten your mind, one word at a time...",
+            "Let go of what you're carrying...",
+            "Start writing. Your words will disappear...",
+            "Say it here, leave it here..."
+        ];
+        
         // Multiline mode state
         this.words = [];
         this.currentWord = '';
@@ -62,6 +80,12 @@ class InvisibleJournal {
         this.startAnimationLoop();
         this.startDeletionLoop();
         this.preventStorage();
+        this.setRandomPlaceholder();
+    }
+    
+    setRandomPlaceholder() {
+        const randomPhrase = this.placeholderPhrases[Math.floor(Math.random() * this.placeholderPhrases.length)];
+        this.input.setAttribute('placeholder', randomPhrase);
     }
 
     setupCanvas() {
@@ -583,6 +607,11 @@ class InvisibleJournal {
         this.input.value = this.currentText.substring(1);
         this.currentText = this.input.value;
         this.updateDisplay();
+        
+        // If text is now empty, show a new random placeholder
+        if (this.currentText.length === 0) {
+            this.setRandomPlaceholder();
+        }
     }
 
     getCharPosition(charIndex) {
