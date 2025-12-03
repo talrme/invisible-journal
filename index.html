@@ -48,27 +48,33 @@
                 </div>
                 <div class="modal-body">
                     <div class="setting-item">
-                        <label for="layout-mode">Layout Mode</label>
-                        <select id="layout-mode">
-                            <option value="single">Single Line (Delete & Pull)</option>
-                            <option value="multiline">3 Lines (Fade in Place)</option>
-                        </select>
-                    </div>
-
-                    <div class="setting-item">
-                        <label for="effect-select">Visual Effect</label>
-                        <select id="effect-select">
-                            <option value="gravity">🪐 Gravity Pull</option>
-                            <option value="dissolve">✨ Dissolve</option>
-                            <option value="float">🎈 Float Away</option>
-                            <option value="explode">💥 Explode</option>
-                            <option value="spiral">🌀 Spiral</option>
-                            <option value="wave">🌊 Wave</option>
-                            <option value="vortex">🌪️ Vortex</option>
-                            <option value="firework">🎆 Firework</option>
-                            <option value="scatter">🎲 Scatter</option>
-                            <option value="typewriter">⌨️ Typewriter Erase</option>
-                        </select>
+                        <label>Disappearing Effect</label>
+                        <div class="effect-buttons" id="effect-buttons">
+                            <button class="effect-btn active" data-effect="gravity" aria-label="Drop" title="Drop">
+                                <span class="effect-icon">🪐</span>
+                                <span class="effect-label">Drop</span>
+                            </button>
+                            <button class="effect-btn" data-effect="dissolve" aria-label="Dissolve" title="Dissolve">
+                                <span class="effect-icon">✨</span>
+                                <span class="effect-label">Dissolve</span>
+                            </button>
+                            <button class="effect-btn" data-effect="explode" aria-label="Explode" title="Explode">
+                                <span class="effect-icon">💥</span>
+                                <span class="effect-label">Explode</span>
+                            </button>
+                            <button class="effect-btn" data-effect="spiral" aria-label="Spiral" title="Spiral">
+                                <span class="effect-icon">🌀</span>
+                                <span class="effect-label">Spiral</span>
+                            </button>
+                            <button class="effect-btn" data-effect="firework" aria-label="Firework" title="Firework">
+                                <span class="effect-icon">🎆</span>
+                                <span class="effect-label">Firework</span>
+                            </button>
+                            <button class="effect-btn" data-effect="scatter" aria-label="Scatter" title="Scatter">
+                                <span class="effect-icon">🎲</span>
+                                <span class="effect-label">Scatter</span>
+                            </button>
+                        </div>
                     </div>
 
                     <div class="setting-item">
@@ -80,31 +86,75 @@
                     </div>
 
                     <div class="setting-item">
-                        <label for="theme-toggle">Theme</label>
-                        <button id="theme-toggle" class="toggle-btn" aria-label="Toggle theme">
-                            <span class="toggle-icon">🌙</span> Dark Mode
+                        <label>Theme</label>
+                        <div class="theme-swatches" id="theme-swatches">
+                            <button class="theme-swatch active" data-theme="light-blue" aria-label="Light Blue">
+                                <span class="swatch-gradient theme-light-blue"></span>
+                                <span class="swatch-label">Light Blue</span>
+                            </button>
+                            <button class="theme-swatch" data-theme="dark" aria-label="Dark">
+                                <span class="swatch-gradient theme-dark"></span>
+                                <span class="swatch-label">Dark</span>
+                            </button>
+                            <button class="theme-swatch" data-theme="warm" aria-label="Warm">
+                                <span class="swatch-gradient theme-warm"></span>
+                                <span class="swatch-label">Warm</span>
+                            </button>
+                            <button class="theme-swatch" data-theme="dark-warm" aria-label="Dark Warm">
+                                <span class="swatch-gradient theme-dark-warm"></span>
+                                <span class="swatch-label">Dark Warm</span>
+                            </button>
+                            <button class="theme-swatch" data-theme="forest" aria-label="Forest">
+                                <span class="swatch-gradient theme-forest"></span>
+                                <span class="swatch-label">Forest</span>
+                            </button>
+                            <button class="theme-swatch" data-theme="dark-forest" aria-label="Dark Forest">
+                                <span class="swatch-gradient theme-dark-forest"></span>
+                                <span class="swatch-label">Dark Forest</span>
+                            </button>
+                            <button class="theme-swatch" data-theme="lavender" aria-label="Lavender">
+                                <span class="swatch-gradient theme-lavender"></span>
+                                <span class="swatch-label">Lavender</span>
+                            </button>
+                            <button class="theme-swatch" data-theme="dark-lavender" aria-label="Dark Lavender">
+                                <span class="swatch-gradient theme-dark-lavender"></span>
+                                <span class="swatch-label">Dark Lavender</span>
+                            </button>
+                            <button class="theme-swatch" data-theme="minimal" aria-label="Minimal">
+                                <span class="swatch-gradient theme-minimal"></span>
+                                <span class="swatch-label">Minimal</span>
+                            </button>
+                            <button class="theme-swatch" data-theme="dark-minimal" aria-label="Dark Minimal">
+                                <span class="swatch-gradient theme-dark-minimal"></span>
+                                <span class="swatch-label">Dark Minimal</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <label>Font</label>
+                        <div class="font-buttons" id="font-buttons">
+                            <button class="font-btn" data-font="serif" style="font-family: Georgia, 'Times New Roman', serif;">Serif</button>
+                            <button class="font-btn active" data-font="sans" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">Sans-Serif</button>
+                            <button class="font-btn" data-font="mono" style="font-family: 'Courier New', monospace;">Monospace</button>
+                            <button class="font-btn" data-font="handwriting" style="font-family: 'Brush Script MT', cursive;">Handwriting</button>
+                        </div>
+                    </div>
+
+                    <!-- Advanced Section -->
+                    <div class="advanced-section">
+                        <button class="advanced-toggle" id="advanced-toggle">
+                            <span class="toggle-arrow">▶</span> Advanced
                         </button>
-                    </div>
-
-                    <div class="setting-item">
-                        <label for="bg-select">Background</label>
-                        <select id="bg-select">
-                            <option value="default">Calm Blue</option>
-                            <option value="warm">Warm Sunset</option>
-                            <option value="forest">Forest Green</option>
-                            <option value="lavender">Lavender</option>
-                            <option value="minimal">Minimal</option>
-                        </select>
-                    </div>
-
-                    <div class="setting-item">
-                        <label for="font-select">Font</label>
-                        <select id="font-select">
-                            <option value="serif">Serif</option>
-                            <option value="sans">Sans-Serif</option>
-                            <option value="mono">Monospace</option>
-                            <option value="handwriting">Handwriting</option>
-                        </select>
+                        <div class="advanced-content" id="advanced-content">
+                            <div class="setting-item">
+                                <label for="layout-mode">Layout Style</label>
+                                <select id="layout-mode">
+                                    <option value="single">Single Line (Delete & Pull)</option>
+                                    <option value="multiline">3 Lines (Fade in Place)</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

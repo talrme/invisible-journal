@@ -13,12 +13,13 @@ class InvisibleJournal {
         this.textDisplayCursor = document.getElementById('text-display-cursor');
         this.writingArea = document.getElementById('writing-area');
         this.layoutModeSelect = document.getElementById('layout-mode');
-        this.effectSelect = document.getElementById('effect-select');
+        this.effectButtons = document.getElementById('effect-buttons');
         this.speedSlider = document.getElementById('speed-slider');
         this.speedLabel = document.getElementById('speed-label');
-        this.themeToggle = document.getElementById('theme-toggle');
-        this.bgSelect = document.getElementById('bg-select');
-        this.fontSelect = document.getElementById('font-select');
+        this.themeSwatches = document.getElementById('theme-swatches');
+        this.fontButtons = document.getElementById('font-buttons');
+        this.advancedToggle = document.getElementById('advanced-toggle');
+        this.advancedContent = document.getElementById('advanced-content');
         
         // Modal elements
         this.settingsBtn = document.getElementById('settings-btn');
@@ -31,7 +32,8 @@ class InvisibleJournal {
         this.layoutMode = 'single'; // 'single' or 'multiline'
         this.visualEffect = 'gravity';
         this.speed = 1.0; // 0 (slowest) to 5 (fastest) chars/sec
-        this.isDark = false;
+        this.currentTheme = 'light-blue';
+        this.currentFont = 'sans';
         this.particles = [];
         this.deletionTimeout = null;
         this.animationFrame = null;
@@ -104,10 +106,20 @@ class InvisibleJournal {
             this.updateURL();
         });
 
-        // Visual effect selection
-        this.effectSelect.addEventListener('change', (e) => {
-            this.visualEffect = e.target.value;
-            this.updateURL();
+        // Visual effect buttons
+        this.effectButtons.querySelectorAll('.effect-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const effectBtn = e.currentTarget;
+                const effect = effectBtn.getAttribute('data-effect');
+                
+                // Update active state
+                this.effectButtons.querySelectorAll('.effect-btn').forEach(b => b.classList.remove('active'));
+                effectBtn.classList.add('active');
+                
+                // Apply effect
+                this.visualEffect = effect;
+                this.updateURL();
+            });
         });
 
         // Speed control
@@ -117,33 +129,45 @@ class InvisibleJournal {
             this.updateURL();
         });
 
-        // Theme toggle
-        this.themeToggle.addEventListener('click', () => {
-            this.isDark = !this.isDark;
-            document.documentElement.setAttribute('data-theme', this.isDark ? 'dark' : 'light');
-            const icon = this.themeToggle.querySelector('.toggle-icon');
-            const text = this.themeToggle.childNodes[2];
-            if (this.isDark) {
-                icon.textContent = '☀️';
-                text.textContent = ' Light Mode';
-            } else {
-                icon.textContent = '🌙';
-                text.textContent = ' Dark Mode';
-            }
-            this.updateURL();
+        // Theme swatches
+        this.themeSwatches.querySelectorAll('.theme-swatch').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const swatch = e.currentTarget;
+                const theme = swatch.getAttribute('data-theme');
+                
+                // Update active state
+                this.themeSwatches.querySelectorAll('.theme-swatch').forEach(s => s.classList.remove('active'));
+                swatch.classList.add('active');
+                
+                // Apply theme
+                this.currentTheme = theme;
+                document.body.setAttribute('data-theme', theme);
+                this.updateURL();
+            });
         });
 
-        // Background selection
-        this.bgSelect.addEventListener('change', (e) => {
-            document.body.setAttribute('data-background', e.target.value);
-            this.updateURL();
+        // Font buttons
+        this.fontButtons.querySelectorAll('.font-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const fontBtn = e.currentTarget;
+                const font = fontBtn.getAttribute('data-font');
+                
+                // Update active state
+                this.fontButtons.querySelectorAll('.font-btn').forEach(f => f.classList.remove('active'));
+                fontBtn.classList.add('active');
+                
+                // Apply font
+                this.currentFont = font;
+                this.input.setAttribute('data-font', font);
+                this.textDisplay.setAttribute('data-font', font);
+                this.updateURL();
+            });
         });
 
-        // Font selection
-        this.fontSelect.addEventListener('change', (e) => {
-            this.input.setAttribute('data-font', e.target.value);
-            this.textDisplay.setAttribute('data-font', e.target.value);
-            this.updateURL();
+        // Advanced toggle
+        this.advancedToggle.addEventListener('click', () => {
+            this.advancedToggle.classList.toggle('active');
+            this.advancedContent.classList.toggle('expanded');
         });
 
         // Text input - different handling based on mode
@@ -257,7 +281,14 @@ class InvisibleJournal {
         // Load visual effect
         if (params.has('effect')) {
             this.visualEffect = params.get('effect');
-            this.effectSelect.value = this.visualEffect;
+            // Update active effect button
+            this.effectButtons.querySelectorAll('.effect-btn').forEach(btn => {
+                if (btn.getAttribute('data-effect') === this.visualEffect) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
         }
         
         // Load speed
@@ -269,32 +300,31 @@ class InvisibleJournal {
         
         // Load theme
         if (params.has('theme')) {
-            this.isDark = params.get('theme') === 'dark';
-            document.documentElement.setAttribute('data-theme', this.isDark ? 'dark' : 'light');
-            const icon = this.themeToggle.querySelector('.toggle-icon');
-            const text = this.themeToggle.childNodes[2];
-            if (this.isDark) {
-                icon.textContent = '☀️';
-                text.textContent = ' Light Mode';
-            } else {
-                icon.textContent = '🌙';
-                text.textContent = ' Dark Mode';
-            }
-        }
-        
-        // Load background
-        if (params.has('bg')) {
-            const bg = params.get('bg');
-            this.bgSelect.value = bg;
-            document.body.setAttribute('data-background', bg);
+            this.currentTheme = params.get('theme');
+            document.body.setAttribute('data-theme', this.currentTheme);
+            // Update active swatch
+            this.themeSwatches.querySelectorAll('.theme-swatch').forEach(s => {
+                if (s.getAttribute('data-theme') === this.currentTheme) {
+                    s.classList.add('active');
+                } else {
+                    s.classList.remove('active');
+                }
+            });
         }
         
         // Load font
         if (params.has('font')) {
-            const font = params.get('font');
-            this.fontSelect.value = font;
-            this.input.setAttribute('data-font', font);
-            this.textDisplay.setAttribute('data-font', font);
+            this.currentFont = params.get('font');
+            this.input.setAttribute('data-font', this.currentFont);
+            this.textDisplay.setAttribute('data-font', this.currentFont);
+            // Update active font button
+            this.fontButtons.querySelectorAll('.font-btn').forEach(f => {
+                if (f.getAttribute('data-font') === this.currentFont) {
+                    f.classList.add('active');
+                } else {
+                    f.classList.remove('active');
+                }
+            });
         }
     }
     
@@ -311,14 +341,11 @@ class InvisibleJournal {
         if (this.speed !== 1.0) {
             params.set('speed', this.speed);
         }
-        if (this.isDark) {
-            params.set('theme', 'dark');
+        if (this.currentTheme !== 'light-blue') {
+            params.set('theme', this.currentTheme);
         }
-        if (this.bgSelect.value !== 'default') {
-            params.set('bg', this.bgSelect.value);
-        }
-        if (this.fontSelect.value !== 'serif') {
-            params.set('font', this.fontSelect.value);
+        if (this.currentFont !== 'sans') {
+            params.set('font', this.currentFont);
         }
         
         // Update URL without reloading page
@@ -605,20 +632,11 @@ class InvisibleJournal {
             case 'explode':
                 this.createExplodeEffect(char, x, y, color);
                 break;
-            case 'float':
-                this.createFloatEffect(char, x, y, color);
-                break;
             case 'spiral':
                 this.createSpiralEffect(char, x, y, color);
                 break;
             case 'dissolve':
                 this.createDissolveEffect(char, x, y, color);
-                break;
-            case 'wave':
-                this.createWaveEffect(char, x, y, color);
-                break;
-            case 'vortex':
-                this.createVortexEffect(char, x, y, color);
                 break;
             case 'gravity':
                 this.createGravityEffect(char, x, y, color);
@@ -628,9 +646,6 @@ class InvisibleJournal {
                 break;
             case 'scatter':
                 this.createScatterEffect(char, x, y, color);
-                break;
-            case 'typewriter':
-                this.createTypewriterEffect(char, x, y, color);
                 break;
         }
     }
@@ -654,22 +669,6 @@ class InvisibleJournal {
                 color: color
             });
         }
-    }
-
-    createFloatEffect(char, x, y, color) {
-        this.particles.push({
-            x, y, char,
-            vx: (Math.random() - 0.5) * 0.5,
-            vy: -3,
-            alpha: 1,
-            size: 18,
-            decay: 0.01,
-            gravity: 0.05,
-            rotation: 0,
-            rotationSpeed: (Math.random() - 0.5) * 0.08,
-            type: 'float',
-            color: color
-        });
     }
 
     createSpiralEffect(char, x, y, color) {
@@ -710,43 +709,6 @@ class InvisibleJournal {
                 color: color
             });
         }
-    }
-
-    createWaveEffect(char, x, y, color) {
-        this.particles.push({
-            x, y, char,
-            vx: 3,
-            vy: 0,
-            alpha: 1,
-            size: 18,
-            decay: 0.012,
-            time: 0,
-            waveAmplitude: 30,
-            waveFrequency: 0.15,
-            rotation: 0,
-            rotationSpeed: 0.1,
-            type: 'wave',
-            color: color
-        });
-    }
-
-    createVortexEffect(char, x, y, color) {
-        this.particles.push({
-            x, y, char,
-            angle: Math.random() * Math.PI * 2,
-            radius: 0,
-            radiusSpeed: -1.5,
-            radiusAccel: 0.15,
-            angleSpeed: 0.3,
-            alpha: 1,
-            size: 18,
-            decay: 0.015,
-            rotation: 0,
-            rotationSpeed: 0.4,
-            phase: 'contract',
-            type: 'vortex',
-            color: color
-        });
     }
 
     createGravityEffect(char, x, y, color) {
@@ -801,23 +763,6 @@ class InvisibleJournal {
         });
     }
 
-    createTypewriterEffect(char, x, y, color) {
-        this.particles.push({
-            x, y, char,
-            vx: 0,
-            vy: 0,
-            alpha: 1,
-            size: 18,
-            decay: 0.03,
-            rotation: 0,
-            rotationSpeed: 0,
-            scale: 1,
-            scaleSpeed: -0.02,
-            type: 'typewriter',
-            color: color
-        });
-    }
-
     updateParticles() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         
@@ -825,7 +770,6 @@ class InvisibleJournal {
             // Update based on type
             switch(p.type) {
                 case 'explode':
-                case 'float':
                 case 'dissolve':
                 case 'scatter':
                     p.x += p.vx;
@@ -837,24 +781,6 @@ class InvisibleJournal {
                 case 'spiral':
                     p.angle += p.angleSpeed;
                     p.radius += p.radiusSpeed;
-                    p.rotation += p.rotationSpeed;
-                    break;
-
-                case 'wave':
-                    p.time += 0.1;
-                    p.x += p.vx;
-                    p.y = p.y + Math.sin(p.time * p.waveFrequency) * 2;
-                    p.rotation += p.rotationSpeed;
-                    break;
-
-                case 'vortex':
-                    if (p.phase === 'contract' && p.radius < -50) {
-                        p.phase = 'expand';
-                        p.radiusSpeed = 3;
-                    }
-                    p.angle += p.angleSpeed;
-                    p.radius += p.radiusSpeed;
-                    p.radiusSpeed += p.radiusAccel;
                     p.rotation += p.rotationSpeed;
                     break;
 
@@ -896,13 +822,6 @@ class InvisibleJournal {
                         }
                     }
                     break;
-
-                case 'typewriter':
-                    if (p.scale !== undefined) {
-                        p.scale += p.scaleSpeed;
-                        if (p.scale < 0) p.scale = 0;
-                    }
-                    break;
             }
 
             // Update alpha
@@ -916,7 +835,7 @@ class InvisibleJournal {
 
                 let drawX = p.x;
                 let drawY = p.y;
-                if (p.type === 'spiral' || p.type === 'vortex') {
+                if (p.type === 'spiral') {
                     drawX = p.x + Math.cos(p.angle) * p.radius;
                     drawY = p.y + Math.sin(p.angle) * p.radius;
                 }
