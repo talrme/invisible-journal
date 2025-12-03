@@ -39,6 +39,7 @@ class InvisibleJournal {
         this.isTyping = false;
         this.lastTypingTime = 0;
         this.lastDeletionTime = 0; // Track when we last deleted a character
+        this.firstCharTime = 0; // Track when first character was typed
         this.maxLineChars = 80; // Approximate max characters for one line
         this.updateMaxLineChars(); // Set based on screen size
         
@@ -54,6 +55,7 @@ class InvisibleJournal {
 
     init() {
         this.setupCanvas();
+        this.loadSettingsFromURL();
         this.setupEventListeners();
         this.startAnimationLoop();
         this.startDeletionLoop();
@@ -99,17 +101,20 @@ class InvisibleJournal {
         this.layoutModeSelect.addEventListener('change', (e) => {
             this.layoutMode = e.target.value;
             this.switchLayoutMode();
+            this.updateURL();
         });
 
         // Visual effect selection
         this.effectSelect.addEventListener('change', (e) => {
             this.visualEffect = e.target.value;
+            this.updateURL();
         });
 
         // Speed control
         this.speedSlider.addEventListener('input', (e) => {
             this.speed = parseFloat(e.target.value);
             this.updateSpeedLabel();
+            this.updateURL();
         });
 
         // Theme toggle
@@ -125,17 +130,20 @@ class InvisibleJournal {
                 icon.textContent = '🌙';
                 text.textContent = ' Dark Mode';
             }
+            this.updateURL();
         });
 
         // Background selection
         this.bgSelect.addEventListener('change', (e) => {
             document.body.setAttribute('data-background', e.target.value);
+            this.updateURL();
         });
 
         // Font selection
         this.fontSelect.addEventListener('change', (e) => {
             this.input.setAttribute('data-font', e.target.value);
             this.textDisplay.setAttribute('data-font', e.target.value);
+            this.updateURL();
         });
 
         // Text input - different handling based on mode
@@ -215,10 +223,107 @@ class InvisibleJournal {
         this.updateDisplay();
         this.lastTypingTime = Date.now();
         
-        // If this is the first character typed, set lastDeletionTime to give a 0.5 second buffer
+        // If this is the first character typed, set lastDeletionTime so first deletion happens in 200ms
         if (!hadText && this.currentText.length > 0) {
-            this.lastDeletionTime = Date.now() + 500; // Add 0.5 second delay
+            const now = Date.now();
+            
+            // If speed is 0, set lastDeletionTime way in the future so nothing deletes
+            if (this.speed === 0) {
+                this.lastDeletionTime = now + 999999;
+            } else {
+                // Set lastDeletionTime to (now - normalSpeed + 200ms)
+                // This way the first deletion will happen exactly 200ms from now
+                const normalSpeed = this.getDeleteSpeed();
+                this.lastDeletionTime = now - normalSpeed + 200;
+            }
+            
+            this.firstCharTime = now;
         }
+    }
+
+    // ==================== URL Management ====================
+    loadSettingsFromURL() {
+        const params = new URLSearchParams(window.location.search);
+        
+        // Load layout mode
+        if (params.has('layout')) {
+            this.layoutMode = params.get('layout');
+            this.layoutModeSelect.value = this.layoutMode;
+            if (this.layoutMode === 'multiline') {
+                this.writingArea.classList.add('multiline-mode');
+            }
+        }
+        
+        // Load visual effect
+        if (params.has('effect')) {
+            this.visualEffect = params.get('effect');
+            this.effectSelect.value = this.visualEffect;
+        }
+        
+        // Load speed
+        if (params.has('speed')) {
+            this.speed = parseFloat(params.get('speed'));
+            this.speedSlider.value = this.speed;
+            this.updateSpeedLabel();
+        }
+        
+        // Load theme
+        if (params.has('theme')) {
+            this.isDark = params.get('theme') === 'dark';
+            document.documentElement.setAttribute('data-theme', this.isDark ? 'dark' : 'light');
+            const icon = this.themeToggle.querySelector('.toggle-icon');
+            const text = this.themeToggle.childNodes[2];
+            if (this.isDark) {
+                icon.textContent = '☀️';
+                text.textContent = ' Light Mode';
+            } else {
+                icon.textContent = '🌙';
+                text.textContent = ' Dark Mode';
+            }
+        }
+        
+        // Load background
+        if (params.has('bg')) {
+            const bg = params.get('bg');
+            this.bgSelect.value = bg;
+            document.body.setAttribute('data-background', bg);
+        }
+        
+        // Load font
+        if (params.has('font')) {
+            const font = params.get('font');
+            this.fontSelect.value = font;
+            this.input.setAttribute('data-font', font);
+            this.textDisplay.setAttribute('data-font', font);
+        }
+    }
+    
+    updateURL() {
+        const params = new URLSearchParams();
+        
+        // Only add non-default values
+        if (this.layoutMode !== 'single') {
+            params.set('layout', this.layoutMode);
+        }
+        if (this.visualEffect !== 'gravity') {
+            params.set('effect', this.visualEffect);
+        }
+        if (this.speed !== 1.0) {
+            params.set('speed', this.speed);
+        }
+        if (this.isDark) {
+            params.set('theme', 'dark');
+        }
+        if (this.bgSelect.value !== 'default') {
+            params.set('bg', this.bgSelect.value);
+        }
+        if (this.fontSelect.value !== 'serif') {
+            params.set('font', this.fontSelect.value);
+        }
+        
+        // Update URL without reloading page
+        const newURL = params.toString() ? `?${params.toString()}` : '?';
+        window.history.replaceState({}, '', newURL);
     }
 
     // ==================== Layout Mode Switching ====================
