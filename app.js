@@ -40,6 +40,7 @@ class InvisibleJournal {
         this.lastTypingTime = 0;
         this.lastDeletionTime = 0; // Track when we last deleted a character
         this.maxLineChars = 80; // Approximate max characters for one line
+        this.updateMaxLineChars(); // Set based on screen size
         
         // Multiline mode state
         this.words = [];
@@ -63,13 +64,34 @@ class InvisibleJournal {
         // Make canvas larger than the input to show particles flying around
         const rect = this.input.getBoundingClientRect();
         this.canvas.width = rect.width;
-        this.canvas.height = 400; // Fixed height for particles to fly around
+        
+        // Shorter canvas on mobile since keyboard takes space
+        const isMobile = window.innerWidth < 768;
+        this.canvas.height = isMobile ? 200 : 400;
 
         window.addEventListener('resize', () => {
             const rect = this.input.getBoundingClientRect();
             this.canvas.width = rect.width;
-            this.canvas.height = 400;
+            const isMobile = window.innerWidth < 768;
+            this.canvas.height = isMobile ? 200 : 400;
+            this.updateMaxLineChars();
         });
+    }
+    
+    updateMaxLineChars() {
+        // Get container width
+        const containerWidth = this.input.offsetWidth;
+        
+        // Get font size
+        const fontSize = parseFloat(getComputedStyle(this.textDisplay).fontSize);
+        
+        // Rough estimate: characters are about 0.6x their font size in width
+        const estimatedCharWidth = fontSize * 0.6;
+        
+        // Calculate max characters
+        this.maxLineChars = Math.floor(containerWidth / estimatedCharWidth);
+        
+        console.log(`Width: ${containerWidth}px, Font: ${fontSize}px, Char width: ~${estimatedCharWidth}px, Max: ${this.maxLineChars}`);
     }
 
     setupEventListeners() {

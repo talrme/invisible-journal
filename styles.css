@@ -28,6 +28,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -35,11 +36,17 @@ body {
     background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
     color: var(--text-primary);
     min-height: 100vh;
+    min-height: -webkit-fill-available;
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 20px;
     transition: background 0.3s ease;
+    touch-action: manipulation;
+}
+
+html {
+    height: -webkit-fill-available;
 }
 
 /* Background variations */
@@ -254,10 +261,12 @@ header h1 {
     color: var(--text-primary);
     white-space: nowrap;
     overflow: hidden;
+    text-overflow: clip;
     font-family: Georgia, 'Times New Roman', serif;
     z-index: 2;
     display: flex;
     align-items: center;
+    max-width: 100%;
 }
 
 /* Multiline mode adjustments */
@@ -296,25 +305,82 @@ header h1 {
 
 /* ==================== Responsive Design ==================== */
 @media (max-width: 768px) {
+    body {
+        padding: 20px 10px 10px 10px;
+        align-items: flex-start;
+        justify-content: flex-start;
+    }
+    
+    .container {
+        gap: 15px;
+        margin-top: 0;
+    }
+    
+    header {
+        padding: 15px;
+    }
+    
     header h1 {
-        font-size: 2rem;
+        font-size: 1.8rem;
+    }
+    
+    .tagline {
+        font-size: 0.9rem;
     }
     
     .header-content {
-        flex-direction: column;
+        gap: 15px;
     }
     
-    .header-buttons {
-        flex-direction: row;
+    .header-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
     }
 
     .writing-area {
-        height: 300px;
+        height: 70px;
+        margin-bottom: 150px; /* Less space on mobile since keyboard takes room */
+    }
+    
+    #particle-canvas {
+        height: 200px; /* Shorter on mobile to fit above keyboard */
     }
 
     #journal-input {
-        padding: 20px;
-        font-size: 1rem;
+        padding: 15px 20px;
+        font-size: 16px;
+    }
+    
+    #text-display {
+        padding: 15px 20px;
+        font-size: 16px;
+    }
+    
+    .modal-content {
+        width: 95%;
+        max-height: 90vh;
+    }
+    
+    .modal-body {
+        max-height: calc(90vh - 80px);
+    }
+    
+    .setting-item label {
+        font-size: 0.9rem;
+    }
+    
+    .setting-item select,
+    .setting-item input[type="range"],
+    .toggle-btn {
+        font-size: 0.95rem;
+    }
+}
+
+/* iPhone specific adjustments */
+@supports (-webkit-touch-callout: none) {
+    body {
+        min-height: -webkit-fill-available;
     }
 }
 .modal {
@@ -544,32 +610,4 @@ header h1 {
     transition: opacity 0.3s ease;
 }
 
-/* ==================== Responsive Design ==================== */
-@media (max-width: 768px) {
-    header h1 {
-        font-size: 2rem;
-    }
-
-    .controls {
-        flex-direction: column;
-    }
-
-    .control-group {
-        width: 100%;
-        min-width: unset;
-    }
-
-    .writing-area {
-        height: 300px;
-    }
-
-    #journal-input {
-        padding: 20px;
-        font-size: 1rem;
-    }
-
-    .delete-btn {
-        width: 100%;
-    }
-}
 
