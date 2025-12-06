@@ -1,0 +1,18 @@
+{
+  "name": "Invisible Journal",
+  "short_name": "Invisible",
+  "description": "Write freely. Your words will disappear.",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#e3f2fd",
+  "theme_color": "#42a5f5",
+  "icons": [
+    {
+      "src": "feelings_wheel.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
+
