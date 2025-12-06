@@ -12,7 +12,7 @@ class InvisibleJournal {
         this.textDisplay = document.getElementById('text-display');
         this.textDisplayCursor = document.getElementById('text-display-cursor');
         this.writingArea = document.getElementById('writing-area');
-        this.layoutModeSelect = document.getElementById('layout-mode');
+        this.layoutButtons = document.getElementById('layout-buttons');
         this.effectButtons = document.getElementById('effect-buttons');
         this.speedSlider = document.getElementById('speed-slider');
         this.speedLabel = document.getElementById('speed-label');
@@ -23,10 +23,8 @@ class InvisibleJournal {
         
         // Modal elements
         this.settingsBtn = document.getElementById('settings-btn');
-        this.infoBtn = document.getElementById('info-btn');
         this.feelingsBtn = document.getElementById('feelings-btn');
         this.settingsModal = document.getElementById('settings-modal');
-        this.infoModal = document.getElementById('info-modal');
         this.feelingsModal = document.getElementById('feelings-modal');
         this.closeBtns = document.querySelectorAll('.close-btn');
 
@@ -125,11 +123,21 @@ class InvisibleJournal {
     }
 
     setupEventListeners() {
-        // Layout mode selection
-        this.layoutModeSelect.addEventListener('change', (e) => {
-            this.layoutMode = e.target.value;
-            this.switchLayoutMode();
-            this.updateURL();
+        // Layout mode buttons
+        this.layoutButtons.querySelectorAll('.layout-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const layoutBtn = e.currentTarget;
+                const layout = layoutBtn.getAttribute('data-layout');
+                
+                // Update active state
+                this.layoutButtons.querySelectorAll('.layout-btn').forEach(b => b.classList.remove('active'));
+                layoutBtn.classList.add('active');
+                
+                // Apply layout
+                this.layoutMode = layout;
+                this.switchLayoutMode();
+                this.updateURL();
+            });
         });
 
         // Visual effect buttons
@@ -217,10 +225,6 @@ class InvisibleJournal {
             this.openModal('settings');
         });
         
-        this.infoBtn.addEventListener('click', () => {
-            this.openModal('info');
-        });
-        
         this.feelingsBtn.addEventListener('click', () => {
             this.openModal('feelings');
         });
@@ -239,12 +243,6 @@ class InvisibleJournal {
             }
         });
         
-        this.infoModal.addEventListener('click', (e) => {
-            if (e.target === this.infoModal) {
-                this.closeModal('info');
-            }
-        });
-        
         this.feelingsModal.addEventListener('click', (e) => {
             if (e.target === this.feelingsModal) {
                 this.closeModal('feelings');
@@ -255,7 +253,6 @@ class InvisibleJournal {
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 this.closeModal('settings');
-                this.closeModal('info');
                 this.closeModal('feelings');
             }
         });
@@ -265,8 +262,6 @@ class InvisibleJournal {
         if (modalName === 'settings') {
             this.settingsModal.classList.add('active');
             this.updateSpeedLabel(); // Show speed label when opening settings
-        } else if (modalName === 'info') {
-            this.infoModal.classList.add('active');
         } else if (modalName === 'feelings') {
             this.feelingsModal.classList.add('active');
         }
@@ -275,8 +270,6 @@ class InvisibleJournal {
     closeModal(modalName) {
         if (modalName === 'settings') {
             this.settingsModal.classList.remove('active');
-        } else if (modalName === 'info') {
-            this.infoModal.classList.remove('active');
         } else if (modalName === 'feelings') {
             this.feelingsModal.classList.remove('active');
         }
@@ -313,10 +306,17 @@ class InvisibleJournal {
         // Load layout mode
         if (params.has('layout')) {
             this.layoutMode = params.get('layout');
-            this.layoutModeSelect.value = this.layoutMode;
             if (this.layoutMode === 'multiline') {
                 this.writingArea.classList.add('multiline-mode');
             }
+            // Update active layout button
+            this.layoutButtons.querySelectorAll('.layout-btn').forEach(btn => {
+                if (btn.getAttribute('data-layout') === this.layoutMode) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
         }
         
         // Load visual effect
@@ -687,9 +687,6 @@ class InvisibleJournal {
             case 'gravity':
                 this.createGravityEffect(char, x, y, color);
                 break;
-            case 'firework':
-                this.createFireworkEffect(char, x, y, color);
-                break;
             case 'scatter':
                 this.createScatterEffect(char, x, y, color);
                 break;
@@ -774,23 +771,6 @@ class InvisibleJournal {
         });
     }
 
-    createFireworkEffect(char, x, y, color) {
-        this.particles.push({
-            x, y, char,
-            vx: (Math.random() - 0.5) * 2,
-            vy: -8,
-            alpha: 1,
-            size: 18,
-            decay: 0.01,
-            gravity: 0.15,
-            rotation: 0,
-            rotationSpeed: (Math.random() - 0.5) * 0.2,
-            exploded: false,
-            type: 'firework',
-            color: color
-        });
-    }
-
     createScatterEffect(char, x, y, color) {
         const angle = Math.random() * Math.PI * 2;
         const speed = 2 + Math.random() * 4;
@@ -838,34 +818,6 @@ class InvisibleJournal {
                     if (p.y > this.canvas.height - 20) {
                         p.vy *= -p.bounce;
                         p.y = this.canvas.height - 20;
-                    }
-                    break;
-
-                case 'firework':
-                    p.x += p.vx;
-                    p.y += p.vy;
-                    p.vy += p.gravity;
-                    p.rotation += p.rotationSpeed;
-                    if (!p.exploded && p.vy > 0) {
-                        p.exploded = true;
-                        for (let i = 0; i < 6; i++) {
-                            const angle = (Math.PI * 2 * i) / 6;
-                            this.particles.push({
-                                x: p.x,
-                                y: p.y,
-                                char: '✦',
-                                vx: Math.cos(angle) * 3,
-                                vy: Math.sin(angle) * 3,
-                                alpha: p.alpha,
-                                size: 10,
-                                decay: 0.02,
-                                gravity: 0.1,
-                                rotation: 0,
-                                rotationSpeed: 0.2,
-                                type: 'dissolve',
-                                color: p.color
-                            });
-                        }
                     }
                     break;
             }

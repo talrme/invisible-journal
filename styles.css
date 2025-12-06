@@ -238,6 +238,17 @@ header h1 {
     box-shadow: 0 4px 12px var(--shadow);
 }
 
+.header-btn.feelings-wheel-btn {
+    padding: 4px;
+}
+
+.feelings-wheel-icon {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
 /* ==================== Controls (Removed - Now in Modal) ==================== */
 
 /* ==================== Writing Area ==================== */
@@ -252,44 +263,6 @@ header h1 {
 .writing-area.multiline-mode {
     height: 250px;
     margin-bottom: 150px;
-}
-
-/* Feelings Wheel Button */
-.feelings-button-container {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: -310px;
-    width: 100%;
-}
-
-.feelings-wheel-btn {
-    padding: 4px;
-    border: 2px solid var(--control-border);
-    border-radius: 50%;
-    background: var(--control-bg);
-    color: var(--text-primary);
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    line-height: 1;
-    width: 50px;
-    height: 50px;
-}
-
-.feelings-wheel-icon {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-.feelings-wheel-btn:hover {
-    border-color: var(--accent);
-    background: rgba(66, 165, 245, 0.1);
-    transform: translateY(-1px) scale(1.05);
-    box-shadow: 0 4px 12px rgba(66, 165, 245, 0.3);
 }
 
 #journal-input {
@@ -455,16 +428,6 @@ header h1 {
     .writing-area {
         height: 70px;
         margin-bottom: 150px; /* Less space on mobile since keyboard takes room */
-    }
-    
-    .feelings-button-container {
-        margin-top: -140px;
-    }
-    
-    .feelings-wheel-btn {
-        width: 44px;
-        height: 44px;
-        padding: 3px;
     }
     
     #particle-canvas {
@@ -714,7 +677,7 @@ header h1 {
 /* Effect Buttons */
 .effect-buttons {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     gap: 10px;
 }
 
@@ -906,12 +869,64 @@ header h1 {
     padding-top: 15px;
 }
 
-/* Info Modal */
-.info-text {
-    font-size: 1.05rem;
-    line-height: 1.8;
+/* Layout Buttons */
+.layout-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.layout-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 16px 12px;
+    border: 2px solid var(--control-border);
+    border-radius: 8px;
+    background: var(--control-bg);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.layout-icon {
+    font-size: 1.5rem;
+    font-weight: bold;
     color: var(--text-primary);
-    margin-bottom: 20px;
+}
+
+.layout-label {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.layout-desc {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.layout-btn:hover {
+    border-color: var(--accent);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(66, 165, 245, 0.2);
+}
+
+.layout-btn.active {
+    border-color: var(--accent);
+    background: rgba(66, 165, 245, 0.1);
+    box-shadow: 0 0 0 3px rgba(66, 165, 245, 0.2);
+}
+
+.layout-btn.active .layout-label {
+    color: var(--accent);
+}
+
+/* Privacy Note in Settings Modal */
+.modal-body .privacy-note {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid var(--control-border);
 }
 
 .privacy-note {
@@ -923,8 +938,9 @@ header h1 {
 
 .privacy-note p {
     margin: 0;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     color: var(--text-primary);
+    line-height: 1.6;
 }
 
 .privacy-note strong {

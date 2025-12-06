@@ -19,7 +19,9 @@
                     <p class="tagline">Write freely. Your words will disappear.</p>
                 </div>
                 <div class="header-buttons">
-                    <button id="info-btn" class="header-btn" aria-label="Information">ℹ️</button>
+                    <button id="feelings-btn" class="header-btn feelings-wheel-btn" aria-label="Feelings Wheel" title="Feelings Wheel">
+                        <img src="feelings_wheel.png" alt="Feelings Wheel" class="feelings-wheel-icon">
+                    </button>
                     <button id="settings-btn" class="header-btn" aria-label="Settings">⚙️</button>
                 </div>
             </div>
@@ -37,13 +39,6 @@
                 spellcheck="false"
                 autocomplete="off"
             />
-        </div>
-
-        <!-- Feelings Wheel Button -->
-        <div class="feelings-button-container">
-            <button id="feelings-btn" class="feelings-wheel-btn" aria-label="Feelings Wheel" title="Feelings Wheel">
-                <img src="feelings_wheel.png" alt="Feelings Wheel" class="feelings-wheel-icon">
-            </button>
         </div>
 
         <!-- Settings Modal -->
@@ -72,10 +67,6 @@
                             <button class="effect-btn" data-effect="spiral" aria-label="Spiral" title="Spiral">
                                 <span class="effect-icon">🌀</span>
                                 <span class="effect-label">Spiral</span>
-                            </button>
-                            <button class="effect-btn" data-effect="firework" aria-label="Firework" title="Firework">
-                                <span class="effect-icon">🎆</span>
-                                <span class="effect-label">Firework</span>
                             </button>
                             <button class="effect-btn" data-effect="scatter" aria-label="Scatter" title="Scatter">
                                 <span class="effect-icon">🎲</span>
@@ -155,33 +146,26 @@
                         </button>
                         <div class="advanced-content" id="advanced-content">
                             <div class="setting-item">
-                                <label for="layout-mode">Layout Style</label>
-                                <select id="layout-mode">
-                                    <option value="single">Single Line (Delete & Pull)</option>
-                                    <option value="multiline">3 Lines (Fade in Place)</option>
-                                </select>
+                                <label>Layout Style</label>
+                                <div class="layout-buttons" id="layout-buttons">
+                                    <button class="layout-btn active" data-layout="single">
+                                        <span class="layout-icon">━</span>
+                                        <span class="layout-label">Single Line</span>
+                                        <span class="layout-desc">Delete & Pull</span>
+                                    </button>
+                                    <button class="layout-btn" data-layout="multiline">
+                                        <span class="layout-icon">≡</span>
+                                        <span class="layout-label">3 Lines</span>
+                                        <span class="layout-desc">Fade in Place</span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Info Modal -->
-        <div id="info-modal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2>About Invisible Journal</h2>
-                    <button class="close-btn" data-modal="info">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <p class="info-text">
-                        Invisible Journal provides a safe space for stream-of-consciousness writing. 
-                        Your thoughts fade away as you type, encouraging authentic self-expression 
-                        without the pressure of permanence.
-                    </p>
+                    <!-- Privacy Note -->
                     <div class="privacy-note">
-                        <p>🔒 <strong>Note:</strong> Nothing you write is saved, stored, or transmitted. Your words disappear forever.</p>
+                        <p>🔒 <strong>Privacy:</strong> Nothing you write is saved, stored, or transmitted. Your words disappear forever.</p>
                     </div>
                 </div>
             </div>
