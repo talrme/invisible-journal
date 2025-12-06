@@ -171,6 +171,7 @@ html {
 header {
     text-align: center;
     padding: 20px;
+    padding-top: max(20px, env(safe-area-inset-top));
     background: var(--control-bg);
     border-radius: 15px;
     box-shadow: 0 4px 15px var(--shadow);
