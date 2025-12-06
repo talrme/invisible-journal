@@ -16,6 +16,8 @@ class InvisibleJournal {
         this.effectButtons = document.getElementById('effect-buttons');
         this.speedSlider = document.getElementById('speed-slider');
         this.speedLabel = document.getElementById('speed-label');
+        this.variableSpeedCheckbox = document.getElementById('variable-speed-checkbox');
+        this.speedSliderContainer = document.getElementById('speed-slider-container');
         this.themeSwatches = document.getElementById('theme-swatches');
         this.fontButtons = document.getElementById('font-buttons');
         this.advancedToggle = document.getElementById('advanced-toggle');
@@ -32,6 +34,7 @@ class InvisibleJournal {
         this.layoutMode = 'single'; // 'single' or 'multiline'
         this.visualEffect = 'gravity';
         this.speed = 1.0; // 0 (slowest) to 5 (fastest) chars/sec
+        this.useVariableSpeed = true; // Default to variable speed
         this.currentTheme = 'light-blue';
         this.currentFont = 'sans';
         this.particles = [];
@@ -81,6 +84,9 @@ class InvisibleJournal {
         this.startDeletionLoop();
         this.preventStorage();
         this.setRandomPlaceholder();
+        
+        // Auto-focus the input box on page load
+        this.input.focus();
     }
     
     setRandomPlaceholder() {
@@ -160,6 +166,21 @@ class InvisibleJournal {
         this.speedSlider.addEventListener('input', (e) => {
             this.speed = parseFloat(e.target.value);
             this.updateSpeedLabel();
+            this.updateURL();
+        });
+
+        // Variable speed checkbox
+        this.variableSpeedCheckbox.addEventListener('change', (e) => {
+            this.useVariableSpeed = e.target.checked;
+            
+            // Toggle slider disabled state
+            this.speedSlider.disabled = this.useVariableSpeed;
+            if (this.useVariableSpeed) {
+                this.speedSliderContainer.classList.add('disabled');
+            } else {
+                this.speedSliderContainer.classList.remove('disabled');
+            }
+            
             this.updateURL();
         });
 
@@ -279,20 +300,22 @@ class InvisibleJournal {
         const hadText = this.currentText.length > 0;
         this.currentText = this.input.value;
         this.updateDisplay();
+        this.updateSpeedLabel(); // Update debug info in real-time
         this.lastTypingTime = Date.now();
         
-        // If this is the first character typed, set lastDeletionTime so first deletion happens in 200ms
+        // If this is the first character typed, set lastDeletionTime
         if (!hadText && this.currentText.length > 0) {
             const now = Date.now();
+            const normalSpeed = this.getDeleteSpeed();
             
-            // If speed is 0, set lastDeletionTime way in the future so nothing deletes
-            if (this.speed === 0) {
-                this.lastDeletionTime = now + 999999;
+            // If using variable speed, respect the calculated speed (no extra delay)
+            // If using manual speed, add 1000ms initial delay for first character
+            if (this.useVariableSpeed && this.layoutMode === 'single') {
+                // Variable speed: deletion happens based on fullness percentage
+                this.lastDeletionTime = now;
             } else {
-                // Set lastDeletionTime to (now - normalSpeed + 200ms)
-                // This way the first deletion will happen exactly 200ms from now
-                const normalSpeed = this.getDeleteSpeed();
-                this.lastDeletionTime = now - normalSpeed + 200;
+                // Manual speed: first deletion happens after 1000ms
+                this.lastDeletionTime = now - normalSpeed + 1000;
             }
             
             this.firstCharTime = now;
@@ -339,6 +362,20 @@ class InvisibleJournal {
             this.updateSpeedLabel();
         }
         
+        // Load variable speed setting (default is true)
+        if (params.has('variable')) {
+            this.useVariableSpeed = params.get('variable') === 'true';
+        }
+        
+        // Update checkbox and slider state based on variable speed setting
+        this.variableSpeedCheckbox.checked = this.useVariableSpeed;
+        this.speedSlider.disabled = this.useVariableSpeed;
+        if (this.useVariableSpeed) {
+            this.speedSliderContainer.classList.add('disabled');
+        } else {
+            this.speedSliderContainer.classList.remove('disabled');
+        }
+        
         // Load theme
         if (params.has('theme')) {
             this.currentTheme = params.get('theme');
@@ -381,6 +418,9 @@ class InvisibleJournal {
         }
         if (this.speed !== 1.0) {
             params.set('speed', this.speed);
+        }
+        if (!this.useVariableSpeed) {
+            params.set('variable', 'false');
         }
         if (this.currentTheme !== 'light-blue') {
             params.set('theme', this.currentTheme);
@@ -555,8 +595,33 @@ class InvisibleJournal {
 
     // ==================== Speed Calculation ====================
     updateSpeedLabel() {
-        // Speed slider directly represents chars per second (0 to 5)
-        this.speedLabel.textContent = `${this.speed.toFixed(1)} char/s`;
+        // Display speed label
+        if (this.speed === 0) {
+            this.speedLabel.textContent = 'None';
+        } else {
+            this.speedLabel.textContent = `${this.speed.toFixed(1)} char/s`;
+        }
+    }
+    
+    calculateVariableSpeed() {
+        // Variable Speed Logic
+        // 0-5%: 0.1 char/s (very slow, gentle start)
+        // 5-30%: 0.5 char/s (calm start)
+        // 30-60%: 1.0 char/s (comfortable)
+        // 60-100%: Scale from 1.0 to 3.0 char/s (gradual acceleration)
+        
+        const fullness = this.currentText.length / this.maxLineChars;
+        
+        if (fullness < 0.05) {
+            return 0.1;
+        } else if (fullness < 0.30) {
+            return 0.5;
+        } else if (fullness < 0.60) {
+            return 1.0;
+        } else {
+            // Linear scale from 1.0 to 3.0 over 0.60 to 1.00 range
+            return 1.0 + (fullness - 0.60) / 0.40 * 2.0;
+        }
     }
     
     getDeleteSpeed() {
@@ -565,12 +630,20 @@ class InvisibleJournal {
         // 0 chars/sec = infinity (never delete) -> use very large number
         // 5 chars/sec = 200ms per character
         
-        if (this.speed === 0) {
+        // Use variable speed if enabled (only in single-line mode)
+        let effectiveSpeed;
+        if (this.useVariableSpeed && this.layoutMode === 'single') {
+            effectiveSpeed = this.calculateVariableSpeed();
+        } else {
+            effectiveSpeed = this.speed;
+        }
+        
+        if (effectiveSpeed === 0) {
             return 999999; // Effectively never delete
         }
         
         // Direct conversion: 1 char/sec = 1000ms, 5 chars/sec = 200ms
-        return 1000 / this.speed;
+        return 1000 / effectiveSpeed;
     }
 
     // ==================== Deletion System ====================
@@ -590,7 +663,10 @@ class InvisibleJournal {
                 // Calculate deletion speed based on continuous slider value
                 const normalSpeed = this.getDeleteSpeed();
                 
-                if (isFull && activelyTyping) {
+                // Check if speed is effectively 0 (never delete)
+                if (normalSpeed >= 999999) {
+                    shouldDelete = false;
+                } else if (isFull && activelyTyping) {
                     // Line is full and typing - delete fast to keep up
                     shouldDelete = true;
                 } else if (timeSinceLastDeletion >= normalSpeed) {
@@ -624,6 +700,7 @@ class InvisibleJournal {
         this.input.value = this.currentText.substring(1);
         this.currentText = this.input.value;
         this.updateDisplay();
+        this.updateSpeedLabel(); // Update debug info after deletion
         
         // If text is now empty, show a new random placeholder
         if (this.currentText.length === 0) {

@@ -85,11 +85,17 @@
                     </div>
 
                     <div class="setting-item">
-                        <label for="speed-slider">
-                            Minimum Disappearing Speed
+                        <div class="setting-header">
+                            <label>Deleting Speed</label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="variable-speed-checkbox" checked>
+                                <span>Variable Speed</span>
+                            </label>
+                        </div>
+                        <div class="slider-container" id="speed-slider-container">
                             <span id="speed-label" class="speed-value"></span>
-                        </label>
-                        <input type="range" id="speed-slider" min="0" max="5" value="1.0" step="0.2">
+                            <input type="range" id="speed-slider" min="0" max="5" value="1.0" step="0.2" disabled>
+                        </div>
                     </div>
 
                     <div class="setting-item">

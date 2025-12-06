@@ -581,12 +581,51 @@ header h1 {
     margin-bottom: 0;
 }
 
+.setting-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
 .setting-item label {
     display: block;
     font-size: 0.95rem;
     font-weight: 500;
     color: var(--text-primary);
     margin-bottom: 8px;
+}
+
+.setting-header label {
+    margin-bottom: 0;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    font-weight: 400;
+    cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: auto;
+    cursor: pointer;
+    margin: 0;
+}
+
+.checkbox-label span {
+    user-select: none;
+}
+
+.slider-container {
+    position: relative;
+}
+
+.slider-container.disabled {
+    opacity: 0.4;
+    pointer-events: none;
 }
 
 .setting-item select,
@@ -600,6 +639,11 @@ header h1 {
     font-size: 1rem;
     cursor: pointer;
     transition: all 0.2s ease;
+}
+
+.setting-item input[type="range"]:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
 }
 
 .setting-item select:hover,
