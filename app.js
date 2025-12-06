@@ -1,7 +1,10 @@
 /**
  * Invisible Journal - Main Application Logic
  * A therapeutic journaling app where text disappears as you write
+ * Version 1.1.0
  */
+
+const APP_VERSION = '1.1.0';
 
 class InvisibleJournal {
     constructor() {
@@ -77,6 +80,10 @@ class InvisibleJournal {
     }
 
     init() {
+        // Log version on startup
+        console.log(`%c✍️ Invisible Journal v${APP_VERSION}`, 'color: #42a5f5; font-size: 14px; font-weight: bold;');
+        console.log(`%cBuild: ${new Date().toISOString().split('T')[0]}`, 'color: #888; font-size: 11px;');
+        
         this.setupCanvas();
         this.loadSettingsFromURL();
         this.setupEventListeners();
