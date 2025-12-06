@@ -294,6 +294,9 @@ class InvisibleJournal {
         } else if (modalName === 'feelings') {
             this.feelingsModal.classList.remove('active');
         }
+        
+        // Return focus to input after closing modal
+        this.input.focus();
     }
 
     handleTextInput() {
