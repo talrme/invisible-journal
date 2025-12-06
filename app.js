@@ -84,6 +84,12 @@ class InvisibleJournal {
         console.log(`%c✍️ Invisible Journal v${APP_VERSION}`, 'color: #42a5f5; font-size: 14px; font-weight: bold;');
         console.log(`%cBuild: ${new Date().toISOString().split('T')[0]}`, 'color: #888; font-size: 11px;');
         
+        // Update version in UI
+        const versionElement = document.getElementById('version-number');
+        if (versionElement) {
+            versionElement.textContent = APP_VERSION;
+        }
+        
         this.setupCanvas();
         this.loadSettingsFromURL();
         this.setupEventListeners();

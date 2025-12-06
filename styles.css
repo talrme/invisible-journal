@@ -916,6 +916,20 @@ header h1 {
     padding-top: 15px;
 }
 
+/* Version Info */
+.version-info {
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 1px solid var(--control-border);
+    text-align: center;
+    opacity: 0.5;
+}
+
+.version-info small {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
 /* Layout Buttons */
 .layout-buttons {
     display: grid;
