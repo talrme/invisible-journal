@@ -39,6 +39,13 @@
             />
         </div>
 
+        <!-- Feelings Wheel Button -->
+        <div class="feelings-button-container">
+            <button id="feelings-btn" class="feelings-wheel-btn" aria-label="Feelings Wheel" title="Feelings Wheel">
+                <img src="feelings_wheel.png" alt="Feelings Wheel" class="feelings-wheel-icon">
+            </button>
+        </div>
+
         <!-- Settings Modal -->
         <div id="settings-modal" class="modal">
             <div class="modal-content">
@@ -176,6 +183,19 @@
                     <div class="privacy-note">
                         <p>🔒 <strong>Note:</strong> Nothing you write is saved, stored, or transmitted. Your words disappear forever.</p>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feelings Wheel Modal -->
+        <div id="feelings-modal" class="modal">
+            <div class="modal-content feelings-modal-content">
+                <div class="modal-header">
+                    <h2>Feelings Wheel</h2>
+                    <button class="close-btn" data-modal="feelings">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <img src="feelings_wheel.png" alt="Feelings Wheel" class="feelings-wheel-img">
                 </div>
             </div>
         </div>

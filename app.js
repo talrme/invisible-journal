@@ -24,8 +24,10 @@ class InvisibleJournal {
         // Modal elements
         this.settingsBtn = document.getElementById('settings-btn');
         this.infoBtn = document.getElementById('info-btn');
+        this.feelingsBtn = document.getElementById('feelings-btn');
         this.settingsModal = document.getElementById('settings-modal');
         this.infoModal = document.getElementById('info-modal');
+        this.feelingsModal = document.getElementById('feelings-modal');
         this.closeBtns = document.querySelectorAll('.close-btn');
 
         // State
@@ -219,6 +221,10 @@ class InvisibleJournal {
             this.openModal('info');
         });
         
+        this.feelingsBtn.addEventListener('click', () => {
+            this.openModal('feelings');
+        });
+        
         this.closeBtns.forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const modalName = e.target.getAttribute('data-modal');
@@ -239,11 +245,18 @@ class InvisibleJournal {
             }
         });
         
+        this.feelingsModal.addEventListener('click', (e) => {
+            if (e.target === this.feelingsModal) {
+                this.closeModal('feelings');
+            }
+        });
+        
         // Close modal with Escape key
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 this.closeModal('settings');
                 this.closeModal('info');
+                this.closeModal('feelings');
             }
         });
     }
@@ -254,6 +267,8 @@ class InvisibleJournal {
             this.updateSpeedLabel(); // Show speed label when opening settings
         } else if (modalName === 'info') {
             this.infoModal.classList.add('active');
+        } else if (modalName === 'feelings') {
+            this.feelingsModal.classList.add('active');
         }
     }
     
@@ -262,6 +277,8 @@ class InvisibleJournal {
             this.settingsModal.classList.remove('active');
         } else if (modalName === 'info') {
             this.infoModal.classList.remove('active');
+        } else if (modalName === 'feelings') {
+            this.feelingsModal.classList.remove('active');
         }
     }
 
