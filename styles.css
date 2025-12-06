@@ -148,6 +148,8 @@ body {
     justify-content: center;
     align-items: center;
     padding: 20px;
+    padding-top: max(20px, env(safe-area-inset-top));
+    padding-bottom: max(20px, env(safe-area-inset-bottom));
     transition: background 0.3s ease;
     touch-action: manipulation;
 }
