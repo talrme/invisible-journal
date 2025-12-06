@@ -1,6 +1,6 @@
 {
   "name": "Invisible Journal",
-  "short_name": "Invisible",
+  "short_name": "Journal",
   "description": "Write freely. Your words will disappear.",
   "start_url": ".",
   "display": "standalone",
