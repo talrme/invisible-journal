@@ -950,11 +950,19 @@ header h1 {
 /* Feelings Wheel Modal */
 .feelings-modal-content {
     max-width: 800px;
+    max-height: 90vh;
+}
+
+.feelings-modal-content .modal-body {
+    padding: 10px;
+    max-height: calc(90vh - 60px);
 }
 
 .feelings-wheel-img {
     width: 100%;
+    max-height: calc(90vh - 80px);
     height: auto;
+    object-fit: contain;
     display: block;
     border-radius: 8px;
 }
